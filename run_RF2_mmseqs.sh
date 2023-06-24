@@ -9,6 +9,8 @@
 # Setup RF2 environment
 source /home/tsatler/RFdif/RoseTTAFold2/set_up_RF2.sh
 
+rf2_path="/home/tsatler/RFdif/RoseTTAFold2"
+
 while [ $# -gt 0 ]; do
     case "$1" in
         --help)
@@ -71,15 +73,15 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         --num_recycles)
-            num_recycles="--num_recycles $2"
+            num_recycles="$2"
             shift 2
             ;;
         --num_models)
-            num_models="--num_models $2"
+            num_models="$2"
             shift 2
             ;;
         --model_params)
-            model_params="--model_params $2"
+            model_params="$2"
             shift 2
             ;;
         --use_mlm)
@@ -91,15 +93,15 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         --random_seed)
-            random_seed="--random_seed $2"
+            random_seed="$2"
             shift 2
             ;;
         --max_msa)
-            max_msa="--max_msa $2"
+            max_msa="$2"
             shift 2
             ;;
         --subcrop)
-            subcrop="--subcrop $2"
+            subcrop="$2"
             shift 2
             ;;
         *)
@@ -109,20 +111,36 @@ while [ $# -gt 0 ]; do
     esac
 done
 
+# Check if input and output folders are provided
+if [ -z "$input_file" ] || [ -z "$output_folder" ]; then
+    echo "Input file and output folder must be provided."
+    exit 1
+fi
+
+# Set model_params if not provided
+if [ -z "$model_params" ]; then
+    model_params="$rf2_path/network/weights/RF2_apr23.pt"
+fi
+
+# Print the python command
+cmd="python ${rf2_path}/network/predict_mmseq.py "${input_file}" "${output_folder}" \
+    ${prefix:+--prefix "${prefix}"} \
+    ${sym:+--sym "${sym}"} \
+    ${order:+--order "${order}"} \
+    ${msa_concat_mode:+--msa_concat_mode "${msa_concat_mode}"} \
+    ${msa_mode:+--msa_mode "${msa_mode}"} \
+    ${pair_mode:+--pair_mode "${pair_mode}"} \
+    ${collapse_identical} \
+    ${num_recycles:+--num_recycles "${num_recycles}"} \
+    ${num_models:+--num_models "${num_models}"} \
+    ${model_params:+--model_params "${model_params}"} \
+    ${use_mlm} \
+    ${use_dropout} \
+    ${random_seed:+--random_seed "${random_seed}"} \
+    ${max_msa:+--max_msa "${max_msa}"} \
+    ${subcrop:+--subcrop "${subcrop}"}"
+
+echo $cmd
+
 # Run the Python script
-python network/predict_mmseq.py "$input_file" "$output_folder" \
-    ${prefix:+--prefix "$prefix"} \
-    ${sym:+--sym "$sym"} \
-    ${order:+--order "$order"} \
-    ${msa_concat_mode:+--msa_concat_mode "$msa_concat_mode"} \
-    ${msa_mode:+--msa_mode "$msa_mode"} \
-    ${pair_mode:+--pair_mode "$pair_mode"} \
-    $collapse_identical \
-    ${num_recycles:+--num_recycles "$num_recycles"} \
-    ${num_models:+--num_models "$num_models"} \
-    ${model_params:+--model_params "$model_params"} \
-    $use_mlm \
-    $use_dropout \
-    ${random_seed:+--random_seed "$random_seed"} \
-    ${max_msa:+--max_msa "$max_msa"} \
-    ${subcrop:+--subcrop "$subcrop"}
+$cmd
