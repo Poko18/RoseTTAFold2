@@ -18,7 +18,7 @@ parser.add_argument('output_folder', type=str, help='output folder path')
 
 parser.add_argument('--prefix', type=str, default="rf2_seed", help='out pdb prefix')
 parser.add_argument('--sym', type=str, default="X", help='Type of symmetry (default:X))')
-parser.add_argument('--order', type=str, default=1, help='Number of symmetry mates (default: 1)')
+parser.add_argument('--order', type=int, default=1, help='Number of symmetry mates (default: 1)')
 parser.add_argument('--msa_concat_mode', type=str, default="diag", help='MSA concatenation mode')
 
 parser.add_argument('--msa_mode', type=str, default="mmseqs2", help='msa mode: mmseqs2 or single_sequence')
@@ -28,7 +28,7 @@ parser.add_argument('--collapse_identical', action='store_true', help='collapse 
 parser.add_argument('--num_recycles', type=int, default=6, help='Number of recycles')
 parser.add_argument('--num_models', type=int, default=1, help='Number of models to generate')
 
-parser.add_argument('--model_params', type=str, default='weights/RF2_apr23.pt', help='RoseTTAfold2 model weights')
+parser.add_argument('--model_params', type=str, default='network/weights/RF2_apr23.pt', help='RoseTTAfold2 model weights')
 parser.add_argument('--use_mlm', action='store_true', help='Use MLM')
 parser.add_argument('--use_dropout', action='store_true', help='Use dropout')
 parser.add_argument('--random_seed', type=int, default=0, help='Random seed')
@@ -86,11 +86,13 @@ except FileExistsError:
     print("Directory already exists.")
 
 if input_file.endswith('.fasta') or input_file.endswith('.fa'):
-
     with open(input_file, 'r') as file:
         fasta_string = file.read()
 
-    sequences, descriptions = parse_fasta(fasta_string)
+    if fasta_string.strip(): #remove any leading or trailing whitespace
+        sequences, descriptions = parse_fasta(fasta_string)
+    else:
+        print("The FASTA file is empty.")
     # generate MSA and predict all sequences
     for sequence, description in zip(sequences, descriptions):
 
@@ -108,12 +110,12 @@ if input_file.endswith('.fasta') or input_file.endswith('.fa'):
             u_sequences = sequences
             sequences = sum([u_sequences] * copies,[])
             lengths = [len(s) for s in sequences]
-
         sequence = "/".join(sequences)
-        #jobname = prefix+"_"+symm+"_"+get_hash(sequence)[:5]
+        print(f"sequences: {sequence}")
 
 
         ### Generate MSA ###
+        print("Starting MSA...")
         if msa_mode == "mmseqs2":
             get_msa(u_sequences, output_folder, mode=pair_mode, max_msa=max_extra_msa)
             os.rename(f"{output_folder}/msa.a3m", f"{output_folder}/{description}.a3m")

@@ -1,0 +1,54 @@
+1.) Setup RF2 python environment
+source /home/tsatler/RFdif/RoseTTAFold2/set_up_RF2.sh
+
+2a.) Run from bash script - run_RF2_mmseqs.sh
+
+/home/tsatler/RFdif/RoseTTAFold2/run_RF2_mmseqs.sh -i input_file -o output_folder [options]
+
+Options
+-h, --help: Display this help message.
+-i FILE, --input FILE: Specify the input fasta or a3m file.
+-o FOLDER, --output FOLDER: Specify the output folder.
+--prefix PREFIX: Specify the prefix for the output files.
+--sym SYM: Specify the type of symmetry.
+--order ORDER: Specify the number of symmetry mates.
+--msa_concat_mode MODE: Specify the MSA concatenation mode.
+--msa_mode MODE: Specify the MSA mode.
+--pair_mode MODE: Specify the MSA pair mode.
+--collapse_identical: Enable collapsing identical sequences.
+--num_recycles NUM: Specify the number of recycles.
+--num_models NUM: Specify the number of models to generate.
+--model_params PARAMS: Specify the model parameters.
+--use_mlm: Use MLM (Masked Language Modeling).
+--use_dropout: Use dropout.
+--random_seed SEED: Specify the random seed.
+--max_msa MAX: Specify the maximum number of MSA sequences.
+--subcrop SUBCROP: Specify the subcrop value.
+
+2b.) Run with python script predict_mmseq.py
+
+python /home/tsatler/RFdif/RoseTTAFold2/network/predict_mmseq.py input_file output_folder [options]
+
+(model_params full path: /home/tsatler/RFdif/RoseTTAFold2/network/weights/RF2_apr23.pt)
+
+Positional Arguments
+input_file: Path to the input fasta or a3m file.
+output_folder: Path to the output folder.
+
+options
+-h, --help: Show the help message and exit.
+--prefix PREFIX: Specify the prefix for the output pdb files.
+--sym SYM: Specify the type of symmetry (default: X).
+--order ORDER: Specify the number of symmetry mates (default: 1).
+--msa_concat_mode MSA_CONCAT_MODE: Specify the MSA concatenation mode.
+--msa_mode MSA_MODE: Specify the MSA mode: mmseqs2 or single_sequence.
+--pair_mode PAIR_MODE: Specify the MSA pair mode: unpaired_paired, paired, or unpaired.
+--collapse_identical: Enable collapsing identical sequences.
+--num_recycles NUM_RECYCLES: Specify the number of recycles.
+--num_models NUM_MODELS: Specify the number of models to generate.
+--model_params MODEL_PARAMS: Specify the RoseTTAfold2 model weights.
+--use_mlm: Use MLM (Masked Language Modeling).
+--use_dropout: Use dropout.
+--random_seed RANDOM_SEED: Specify the random seed.
+--max_msa MAX_MSA: Specify the maximum number of MSA sequences.
+--subcrop SUBCROP: Specify the subcrop value (currently not working).
