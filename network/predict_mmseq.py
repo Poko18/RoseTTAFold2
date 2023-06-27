@@ -117,8 +117,8 @@ if input_file.endswith('.fasta') or input_file.endswith('.fa'):
         ### Generate MSA ###
         print("Starting MSA...")
         if msa_mode == "mmseqs2":
-            get_msa(u_sequences, output_folder, mode=pair_mode, max_msa=max_extra_msa)
-            os.rename(f"{output_folder}/msa.a3m", f"{output_folder}/{description}.a3m")
+            get_msa(u_sequences, output_folder, mode=pair_mode, max_msa=max_extra_msa, msa_name=f"{description}")
+            #os.rename(f"{output_folder}/msa.a3m", f"{output_folder}/{description}.a3m")
 
         elif msa_mode == "single_sequence":
             u_sequence = "/".join(u_sequences)
@@ -153,6 +153,9 @@ if input_file.endswith('.fasta') or input_file.endswith('.fa'):
                 best_seed = seed
 
 elif input_file.endswith('.a3m'):
+
+    ### Prepare a3m file?
+    #TO DO
 
     description = input_file.split("/")[-1].split(".")[0]
     a3m_file_path = f"{output_folder}/{description}.a3m"

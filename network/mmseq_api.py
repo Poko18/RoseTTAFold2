@@ -56,7 +56,7 @@ def get_unique_sequences(seq_list):
     return unique_seqs
 
 def get_msa(seq, jobname, cov=50, id=90, max_msa=2048,
-            mode="unpaired_paired"):
+            mode="unpaired_paired", msa_name="msa"):
 
   assert mode in ["unpaired","paired","unpaired_paired"]
   seqs = [seq] if isinstance(seq,str) else seq
@@ -70,7 +70,7 @@ def get_msa(seq, jobname, cov=50, id=90, max_msa=2048,
   first_seq = "/".join(sum([[x]*n for x,n in zip(u_seqs,u_nums)],[]))
   msa = [first_seq]
 
-  path = os.path.join(jobname,"msa")
+  path = os.path.join(jobname,f"{msa_name}")
   os.makedirs(path, exist_ok=True)
   if mode in ["paired","unpaired_paired"] and len(u_seqs) > 1:
     print("getting paired MSA")
@@ -89,11 +89,11 @@ def get_msa(seq, jobname, cov=50, id=90, max_msa=2048,
           else:
             sequences[n].append(line)
     # filter MSA
-    with open(f"{path}/paired_in.a3m","w") as handle:
+    with open(f"{path}/paired_in_{msa_name}.a3m","w") as handle:
       for n,sequence in enumerate(sequences):
         handle.write(f">n{n}\n{''.join(sequence)}\n")
-    os.system(f"hhfilter -i {path}/paired_in.a3m -id {id} -cov {cov} -o {path}/paired_out.a3m")
-    with open(f"{path}/paired_out.a3m","r") as handle:
+    os.system(f"hhfilter -i {path}/paired_in_{msa_name}.a3m -id {id} -cov {cov} -o {path}/paired_out_{msa_name}.a3m")
+    with open(f"{path}/paired_out_{msa_name}.a3m","r") as handle:
       for line in handle:
         if line.startswith(">"):
           n = int(line[2:])
@@ -111,11 +111,11 @@ def get_msa(seq, jobname, cov=50, id=90, max_msa=2048,
     sub_msa_num = 0
     for n,a3m_lines in enumerate(out):
       sub_msa.append([])
-      with open(f"{path}/in_{n}.a3m","w") as handle:
+      with open(f"{path}/in_{msa_name}_{n}.a3m","w") as handle:
         handle.write(a3m_lines)
       # filter
-      os.system(f"hhfilter -i {path}/in_{n}.a3m -id {id} -cov {cov} -o {path}/out_{n}.a3m")
-      with open(f"{path}/out_{n}.a3m","r") as handle:
+      os.system(f"hhfilter -i {path}/in_{msa_name}_{n}.a3m -id {id} -cov {cov} -o {path}/out_{msa_name}_{n}.a3m")
+      with open(f"{path}/out_{msa_name}_{n}.a3m","r") as handle:
         for line in handle:
           if not line.startswith(">"):
             xs = ['-'*l for l in Ls]
@@ -134,7 +134,7 @@ def get_msa(seq, jobname, cov=50, id=90, max_msa=2048,
         if len(msa) == max_msa:
           break
 
-  with open(f"{jobname}/msa.a3m","w") as handle:
+  with open(f"{jobname}/{msa_name}.a3m","w") as handle:
     for n,sequence in enumerate(msa):
       handle.write(f">n{n}\n{sequence}\n")
 
