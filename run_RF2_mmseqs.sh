@@ -4,7 +4,6 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=50G
-#SBATCH --exclude=compute-0-11
 
 # Setup RF2 environment
 source /home/tsatler/RFdif/RoseTTAFold2/set_up_RF2.sh

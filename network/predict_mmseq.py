@@ -154,12 +154,29 @@ if input_file.endswith('.fasta') or input_file.endswith('.fa'):
 
 elif input_file.endswith('.a3m'):
 
-    ### Prepare a3m file?
-    #TO DO
-
     description = input_file.split("/")[-1].split(".")[0]
+    a3m_file_path_input = f"{output_folder}/{description}_in.a3m"
+    shutil.copy(input_file, a3m_file_path_input)
+
+    ### Prepare a3m file?
     a3m_file_path = f"{output_folder}/{description}.a3m"
-    shutil.copy(input_file, a3m_file_path)
+
+    msa = []
+    with open(a3m_file_path_input, "r") as handle:
+        for line in handle:
+            line = line.strip()
+            if line.startswith(">") or line.startswith("#"):
+                # Skip the header line
+                continue
+            msa.append(line)
+
+            # Stop adding sequences if the maximum limit is reached
+            if len(msa) == max_msa:
+                break
+
+    with open(a3m_file_path, "w") as handle:
+        for n, sequence in enumerate(msa):
+            handle.write(f">n{n}\n{sequence}\n")
 
     ### Prediction ###
 
