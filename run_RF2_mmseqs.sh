@@ -12,27 +12,27 @@ rf2_path="/home/tsatler/RFdif/RoseTTAFold2"
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        --help)
+        -h | --help)
             echo "Usage: script.sh [OPTIONS]"
             echo "Options:"
             echo "    -h, --help: Display this help message"
             echo "    -i, --input FILE: fasta or a3m file"
             echo "    -o, --output FOLDER: Output folder"
-            echo "    --prefix PREFIX: Prefix"
-            echo "    --sym SYM: Symmetry"
-            echo "    --order ORDER: Order"
-            echo "    --msa_concat_mode MODE: MSA concatenation mode"
-            echo "    --msa_mode MODE: MSA mode"
-            echo "    --pair_mode MODE: Pair mode"
+            echo "    --prefix out pdb prefix (default: rf2_seed)"
+            echo "    --sym Type of symmetry (default: X)"
+            echo "    --order Number of symmetry mates (default: 1)"
+            echo "    --msa_concat_mode diag, repeat or default (default: diag)"
+            echo "    --msa_mode mmseqs2 or single_sequence (default: mmseqs2)"
+            echo "    --pair_mode unpaired_paired, paired or unpaired (default: unpaired_paired)"
             echo "    --collapse_identical: Collapse identical"
-            echo "    --num_recycles NUM: Number of recycles"
-            echo "    --num_models NUM: Number of models"
-            echo "    --model_params PARAMS: Model parameters"
+            echo "    --num_recycles Number of recycles (default: 6)"
+            echo "    --num_models Number of models to generate (default: 1)"
+            echo "    --model_params PARAMS: Model parameters (default: network/weights/RF2_apr23.pt)"
             echo "    --use_mlm: Use MLM"
             echo "    --use_dropout: Use dropout"
-            echo "    --random_seed SEED: Random seed"
-            echo "    --max_msa MAX: Maximum MSA"
-            echo "    --subcrop SUBCROP: Subcrop"
+            echo "    --random_seed Random seed (default: 0)"
+            echo "    --max_msa MAX: Maximum MSA (default: 256)"
+            echo "    --subcrop SUBCROP: Subcrop (default: -1)"
             exit 1
             ;;
         -i | --input)
