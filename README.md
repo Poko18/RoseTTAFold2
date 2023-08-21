@@ -94,3 +94,6 @@ Options:
      -p|--pair: If more than one chain is provided, pair MSAs based on taxonomy ID.
      -h|--hhpred: Run hhpred to generate templates
 ```
+
+## Acknowledgment
+The API code used in this project is adapted from the [ColabFold](https://github.com/sokrypton/ColabFold) repository by [@sokrypton](https://github.com/sokrypton).
